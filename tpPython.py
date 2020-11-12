@@ -1,12 +1,12 @@
 from flask import Flask
 import sqlite3
-
+from flask import render_template
 import os
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./templates")
 
 app.secret_key = b'tartiflette69latrick'
 
@@ -20,7 +20,7 @@ def get_db():
         g.db.row_factory = sqlite3.Row
 
     return g.db
-##----------------------------------------##
+##------------------------------------------##
 
 ##Function to close the database instance##
 def close_db(e=None):
@@ -46,12 +46,21 @@ def init_db_command():
     click.echo('Initialized the database.')
 ##----------------------------------------##
 
-
-
 ####Main functions for the app####
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+
+
+
+####----------------------------------####
+
+##-------------Routage-------------##
+@app.route('/login')
+def login():
+    return render_template('index.html')
+
+@app.route('/homePage')
+def homePage():
+    return render_template('mainPage.html')
+
 ####----------------------------------####
 
 app.teardown_appcontext(close_db)
