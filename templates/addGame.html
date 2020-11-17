@@ -2,30 +2,32 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>G@mingLi$t - HomePage</title>
+    <title>G@mingLi$t - Add a game</title>
     <link rel="stylesheet" href="/templates/css/login.css">
 </head>
 <body class="main-body">
     <section class='main'>
-        <form action='javascript:void(0);' id='form'>
+        <form action='/addG' id='form' method="post">
             <span>
-                                Welcome (add session variable)
+                Welcome (add session variable)
             </span>
             <span>
                 Choose a video game to add it in your game list
             </span>
-                <select id="">
+                <select id="game">
                     <option value="">--Please choose a game--</option>
                     <!-- Select to the database -->
                 </select>
-                <button type='submit'>ADD</button>
-
+                <button type="submit">ADD</button>
+                <input type="hidden" name="add-game">
+        </form>
+        <form action ='/' id="view-list">
             <span>
                 To see your game list :
             </span>
             <button type='submit'>LIST</button>
-
         </form>
+
     </section>
 </body>
 </html>

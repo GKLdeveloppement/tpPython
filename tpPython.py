@@ -5,6 +5,9 @@ import os
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
+from flask import request
+import sys
+import traceback
 
 app = Flask(__name__, static_folder="./templates")
 
@@ -36,7 +39,7 @@ def init_db():
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
-
+    return db
 
 @click.command('init-db')
 @with_appcontext
@@ -46,6 +49,16 @@ def init_db_command():
     click.echo('Initialized the database.')
 ##----------------------------------------##
 
+#Show the logs of the errors
+def errorLog():
+    print('SQLite error: %s' % (' '.join(error.args)))
+    print("Exception class is: ", error.__class__)
+    print('SQLite traceback: ')
+    exc_type, exc_value, exc_tb = sys.exc_info()
+    print(traceback.format_exception(exc_type, exc_value, exc_tb))
+    return "Error"
+##----------------------------------------##
+
 ####Main functions for the app####
 
 
@@ -53,14 +66,53 @@ def init_db_command():
 ####----------------------------------####
 
 ##-------------Routage-------------##
+#Gérer les connexions et les sessions des utilisateurs
 @app.route('/login')
 def login():
-    return render_template('index.html')
+    return render_template('login.html')
 
 @app.route('/homePage')
 def homePage():
-    return render_template('mainPage.html')
+#faire un select en prenant en compte l'id de la session courante de l'utilisateur sur la table de jonction
+#et afficher les jeux de cette table où l'id de celui-ci est présent
+#voir viewList
+    return render_template('homePage.html')
 
+
+@app.route('/viewList', methods=['GET','POST'])
+def viewList():
+    print("ok1")
+    # gameList = request.form
+    if 'add-game' in request.form:
+        try:
+            conn = init_db()
+            # user = request.form['game']
+            conn.execute('SELECT gamename FROM game') #prendre en compte l'user connecté
+            conn.commit()
+        except sqlite3.Error as error:
+            errorLog()
+    return render_template('homePage.html')
+
+
+@app.route('/addGame')
+def addGame():
+    return render_template('addGame.html')
+
+@app.route('/addG', methods=['GET','POST'])
+def addG():
+    #need to check if the user is logged in?
+    if request.method=="POST":
+        # print("ok2")
+        if 'add-game' in request.form:
+            #userId = #getuserid
+            try:
+                conn = init_db()
+                # user = request.form['game']
+                conn.execute('INSERT INTO game (gameName, plateform) VALUES ("azertyuiop", "PS4")') #mettre variable
+                conn.commit()
+            except sqlite3.Error as error:
+                errorLog()
+    return render_template('addGame.html')
 ####----------------------------------####
 
 app.teardown_appcontext(close_db)

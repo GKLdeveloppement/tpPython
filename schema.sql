@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS game;
+DROP TABLE IF EXISTS userGame;
 
 CREATE TABLE user (
   idUser INTEGER PRIMARY KEY,
@@ -9,7 +10,7 @@ CREATE TABLE user (
 );
 
 CREATE TABLE game (
-  idGame INTEGER PRIMARY KEY,
+  idGame INTEGER PRIMARY KEY AUTOINCREMENT,
   gameName TEXT NOT NULL,
   plateform TEXT NOT NULL
 );
@@ -45,4 +46,3 @@ INSERT INTO game (gameName, plateform)
   ('FootballManager2020', 'XBOX'),
   ('FootballManager2020', 'PlayStation'),
   ('FootballManager2020', 'Switch');
-  
