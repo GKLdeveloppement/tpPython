@@ -14,9 +14,11 @@
             <span>
                 Choose a video game to add it in your game list
             </span>
-                <select id="game">
-                    <option value="">--Please choose a game--</option>
+                <select id="gameList">
                     <!-- Select to the database -->
+                    {% for game in gameList %}
+                        <option value={{ game[0] }}>{{ game[1] }}, {{ game[2] }}</option>
+                    {% endfor %}
                 </select>
                 <button type="submit">ADD</button>
                 <input type="hidden" name="add-game">

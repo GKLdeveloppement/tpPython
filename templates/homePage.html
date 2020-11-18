@@ -11,18 +11,24 @@
         <span>
             Your game list
 
-        <table>
-            <ul>
-                <li>zerz</li>
-                <li>zerz</li>
-                <li>zerz</li>
-                <li>zerz</li>
-            </ul>
-        </table>
-        
+
+
         </span>
 
     </form>
+    <br>
+    <br>
+    <table name="gameTable">
+        <tr>
+            <th>Game</th>
+            <th>Plateform</th>
+        </tr>
+        {% for userGame in userGameList %}
+        <tr>
+            <td> {{ userGame['userName'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </section>
 </body>
 </html>

@@ -46,3 +46,8 @@ INSERT INTO game (gameName, plateform)
   ('FootballManager2020', 'XBOX'),
   ('FootballManager2020', 'PlayStation'),
   ('FootballManager2020', 'Switch');
+
+INSERT INTO user (userName, password)
+  VALUES 
+  ('PepsiM', 'XBOX'),
+  ('Maxime', 'Decorde');

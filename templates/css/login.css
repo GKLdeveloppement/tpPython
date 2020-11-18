@@ -8,6 +8,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  color: #f2f2f8;
 }
 .login-body{
   display: flex;
@@ -237,4 +238,10 @@ section.main>form>button:focus {
 section.main>form>button:active {
   transform: translate3D(0, 2px, 0);
   outline: none;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
 }

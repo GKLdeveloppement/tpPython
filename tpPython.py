@@ -81,33 +81,35 @@ def homePage():
 
 @app.route('/viewList', methods=['GET','POST'])
 def viewList():
-    print("ok1")
-    # gameList = request.form
-    if 'add-game' in request.form:
-        try:
-            conn = init_db()
-            # user = request.form['game']
-            conn.execute('SELECT gamename FROM game') #prendre en compte l'user connecté
-            conn.commit()
-        except sqlite3.Error as error:
-            errorLog()
-    return render_template('homePage.html')
+    try:
+        conn = get_db()
+        userGameList = conn.execute('SELECT userName FROM user').fetchall()
+    except sqlite3.Error as error:
+        errorLog()
+    return render_template('homePage.html', userGameList = userGameList)
 
-
-@app.route('/addGame')
+@app.route('/addGame', methods=['GET','POST'])
 def addGame():
-    return render_template('addGame.html')
+    try:
+        conn = get_db()
+        gameList = conn.execute('SELECT * FROM game').fetchall()
+        # for i in gameList:
+        #     for x in i:
+        #         print(x)
+    except sqlite3.Error as error:
+        errorLog()
+    return render_template('addGame.html', gameList = gameList)
 
 @app.route('/addG', methods=['GET','POST'])
 def addG():
     #need to check if the user is logged in?
     if request.method=="POST":
-        # print("ok2")
         if 'add-game' in request.form:
             #userId = #getuserid
             try:
-                conn = init_db()
-                # user = request.form['game']
+                conn = get_db()
+                gameChoose = request.form
+                print(gameChoose)
                 conn.execute('INSERT INTO game (gameName, plateform) VALUES ("azertyuiop", "PS4")') #mettre variable
                 conn.commit()
             except sqlite3.Error as error:
