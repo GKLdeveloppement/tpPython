@@ -1,14 +1,13 @@
-from flask import Flask
-import sqlite3
-from flask import render_template
+from flask import (Flask, current_app, g,
+                   render_template, request,
+                   redirect, url_for, session)
+from flask.cli import with_appcontext
+from markupsafe import escape
+import sys
 import os
 import click
-from flask import current_app, g
-from flask.cli import with_appcontext
-from flask import request
-import sys
 import traceback
-from flask import redirect, url_for
+import sqlite3
 
 app = Flask(__name__, static_folder="./templates")
 
@@ -50,7 +49,7 @@ def init_db_command():
     click.echo('Initialized the database.')
 ##----------------------------------------##
 
-#Show the logs of the errors
+#Error Handling
 def errorLog():
     print('SQLite error: %s' % (' '.join(error.args)))
     print("Exception class is: ", error.__class__)
@@ -63,13 +62,26 @@ def errorLog():
 ####Main functions for the app####
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        session['username'] = request.form.get("username")
+        return redirect(url_for('homePage'))
     return render_template('login.html')
 
-@app.route('/homePage')
+
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('homePage'))
+
+@app.route('/homePage', methods=['GET', 'POST'])
 def homePage():
-    return render_template('homePage.html')
+    if 'username' in session:
+        return render_template('homePage.html', VarUsername =session['username'])
+    return 'You are not logged in'
 
 
 @app.route('/viewList', methods=['GET','POST'])
@@ -86,29 +98,28 @@ def addGame():
     try:
         conn = get_db()
         gameList = conn.execute('SELECT * FROM game').fetchall()
-        ##uncomment to test what return the sqlite request
-        # for i in gameList:
-        #     for x in i:
-        #         print(x)
-        ##
     except sqlite3.Error as error:
-        errorLog()
+        print('SQLite error: %s' % (' '.join(error.args)))
+        print("Exception class is: ", error.__class__)
+        print('SQLite traceback: ')
+        exc_type, exc_value, exc_tb = sys.exc_info()
+        print(traceback.format_exception(exc_type, exc_value, exc_tb))
+        return "Error"
     return render_template('addGame.html', gameList = gameList)
 
 @app.route('/addG', methods=['GET','POST'])
 def addG():
-    #need to check if the user is logged in?
+    tmpUsername = session.get("username")
     if request.method=="POST":
         if 'add-game' in request.form:
             try:
                 conn = get_db()
-                #get the variable in the option HTML element which contain the choise of the user
+                #Get user's game choice from form
                 idGameChoose = request.form.get("gameList")
-                idUser = 1 ###Maxime need to get here the user id who is logged in
-                # print(idGameChoose)
-                #Stock the both variables in a table to use it in the request as params
+                #idUser = 1 CA MARCHE
+                idUser = int(conn.execute('SELECT idUser FROM user WHERE username = ?', tmpUsername).fetchall()) ##NE MARCHE PAS
+                #Stock both variables in a table to use it in the request as params
                 reqParam = [idGameChoose, idUser]
-                #the insert request
                 conn.execute('INSERT INTO userGame (fkGame, fkUser) VALUES (?, ?)',reqParam) #mettre variable
                 conn.commit()
             except sqlite3.Error as error:

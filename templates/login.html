@@ -7,18 +7,18 @@
 <body class="login-body">
 	<section class='login'>
 		<link rel="stylesheet" href="/templates/css/login.css">
-		<form action='javascript:void(0);' id='form'>
+		<form  id='form' name="form-login" method="post">
 			<span>
 				Welcome to G@mingLi$t
 			</span>
 			<br>
 		  <label for='username'>
 			Username
-			<input id='username' type='text'>
+			<input id='username' name="username" type='text' required>
 		  </label>
 		  <label for='password'>
-			Password
-			<input id='password' type='password'>
+			Password (8 characters minimum)
+			<input id='password' type='password' minlength="8" required>
 		  </label>
 		  <button type='submit'>Login</button>
 		</form>
