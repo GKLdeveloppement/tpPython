@@ -14,7 +14,7 @@
             <span>
                 Choose a video game to add it in your game list
             </span>
-                <select id="gameList">
+                <select id="gameList" name="gameList">
                     <!-- Select to the database -->
                     {% for game in gameList %}
                         <option value={{ game[0] }}>{{ game[1] }}, {{ game[2] }}</option>
