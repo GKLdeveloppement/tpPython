@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>G@mingLi$t - Your list</title>
+    <link rel="stylesheet" href="/templates/css/login.css">
+</head>
+<body class="main-body">
+    <section class='main'>
+        <table name="gameTable">
+            <tr>
+                <th>Game</th>
+                <th>Plateform</th>
+            </tr>
+            {% for userGame in userGameList %}
+            <tr>
+                <td> {{ userGame['userName'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+</body>
+</html>

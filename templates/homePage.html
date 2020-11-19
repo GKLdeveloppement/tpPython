@@ -7,28 +7,23 @@
 </head>
 <body class="main-body">
 <section class='main'>
-    <form>
+    <span>
+        Hello
+    </span>
+    <form action='/viewList' id='form-go-list' method="post">
         <span>
-            Your game list
-
-
-
+            Click to see your game list
         </span>
-
+        <button type='submit'>YOUR LIST</button>
     </form>
     <br>
     <br>
-    <table name="gameTable">
-        <tr>
-            <th>Game</th>
-            <th>Plateform</th>
-        </tr>
-        {% for userGame in userGameList %}
-        <tr>
-            <td> {{ userGame['userName'] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <form action='/addGame' id='form-go-add' method="post">
+        <span>
+            Click to add a game in your list
+        </span>
+        <button type='submit'>ADD GAME</button>
+    </form>
 </section>
 </body>
 </html>

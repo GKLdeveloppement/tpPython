@@ -63,16 +63,12 @@ def errorLog():
 ####Main functions for the app####
 
 
-#Gérer les connexions et les sessions des utilisateurs
 @app.route('/login')
 def login():
     return render_template('login.html')
 
 @app.route('/homePage')
 def homePage():
-#faire un select en prenant en compte l'id de la session courante de l'utilisateur sur la table de jonction
-#et afficher les jeux de cette table où l'id de celui-ci est présent
-#voir viewList
     return render_template('homePage.html')
 
 
@@ -83,7 +79,7 @@ def viewList():
         userGameList = conn.execute('SELECT userName FROM user').fetchall()
     except sqlite3.Error as error:
         errorLog()
-    return render_template('homePage.html', userGameList = userGameList)
+    return render_template('yourList.html', userGameList = userGameList)
 
 @app.route('/addGame', methods=['GET','POST'])
 def addGame():
@@ -112,6 +108,7 @@ def addG():
                 # print(idGameChoose)
                 #Stock the both variables in a table to use it in the request as params
                 reqParam = [idGameChoose, idUser]
+                #the insert request
                 conn.execute('INSERT INTO userGame (fkGame, fkUser) VALUES (?, ?)',reqParam) #mettre variable
                 conn.commit()
             except sqlite3.Error as error:
