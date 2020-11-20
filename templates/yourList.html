@@ -14,7 +14,9 @@
             </tr>
             {% for userGame in userGameList %}
             <tr>
-                <td> {{ userGame['userName'] }}</td>
+                <td> {{ userGame['gameName'] }}</td>
+                <td> {{ userGame['plateform'] }}</td>
+
             </tr>
             {% endfor %}
         </table>

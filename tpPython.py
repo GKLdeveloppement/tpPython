@@ -49,18 +49,8 @@ def init_db_command():
     click.echo('Initialized the database.')
 ##----------------------------------------##
 
-#Error Handling
-def errorLog():
-    print('SQLite error: %s' % (' '.join(error.args)))
-    print("Exception class is: ", error.__class__)
-    print('SQLite traceback: ')
-    exc_type, exc_value, exc_tb = sys.exc_info()
-    print(traceback.format_exception(exc_type, exc_value, exc_tb))
-    return "Error"
-##----------------------------------------##
 
 ####Main functions for the app####
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -68,8 +58,6 @@ def login():
         session['username'] = request.form.get("username")
         return redirect(url_for('homePage'))
     return render_template('login.html')
-
-
 
 
 @app.route('/logout')
@@ -87,10 +75,16 @@ def homePage():
 @app.route('/viewList', methods=['GET','POST'])
 def viewList():
     try:
+        #Can't get the id of the user who logged in the session so we give a default value 1 for fkUser
         conn = get_db()
-        userGameList = conn.execute('SELECT userName FROM user').fetchall()
+        userGameList = conn.execute('SELECT gameName, plateform FROM game INNER JOIN userGame ON fkGame=idGame WHERE fkUser=1').fetchall()
     except sqlite3.Error as error:
-        errorLog()
+        print('SQLite error: %s' % (' '.join(error.args)))
+        print("Exception class is: ", error.__class__)
+        print('SQLite traceback: ')
+        exc_type, exc_value, exc_tb = sys.exc_info()
+        print(traceback.format_exception(exc_type, exc_value, exc_tb))
+        return "Error"
     return render_template('yourList.html', userGameList = userGameList)
 
 @app.route('/addGame', methods=['GET','POST'])
@@ -109,21 +103,30 @@ def addGame():
 
 @app.route('/addG', methods=['GET','POST'])
 def addG():
-    tmpUsername = session.get("username")
+    session['username'] = session.get("username")
+    # conn1 = get_db()
+    #The query to get te id of the user who logged in the session not worked
+    # idUser = conn1.execute('SELECT idUser FROM user WHERE username = (?)', (session['username'],)) #Not worked
     if request.method=="POST":
         if 'add-game' in request.form:
             try:
                 conn = get_db()
                 #Get user's game choice from form
                 idGameChoose = request.form.get("gameList")
-                #idUser = 1 CA MARCHE
-                idUser = int(conn.execute('SELECT idUser FROM user WHERE username = ?', tmpUsername).fetchall()) ##NE MARCHE PAS
+                #default variable for run the function addG
+                idUser = 1
                 #Stock both variables in a table to use it in the request as params
                 reqParam = [idGameChoose, idUser]
                 conn.execute('INSERT INTO userGame (fkGame, fkUser) VALUES (?, ?)',reqParam) #mettre variable
                 conn.commit()
             except sqlite3.Error as error:
-                errorLog()
+                #Error handle
+                print('SQLite error: %s' % (' '.join(error.args)))
+                print("Exception class is: ", error.__class__)
+                print('SQLite traceback: ')
+                exc_type, exc_value, exc_tb = sys.exc_info()
+                print(traceback.format_exception(exc_type, exc_value, exc_tb))
+                return "Error"
     return redirect(url_for('addGame'))
 ####----------------------------------####
 
